@@ -1,0 +1,35 @@
+---
+layout: default
+---
+<article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">{{ page.title }}</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日"
+                    }}</time></span>
+            {% if page.categories %}
+            <span class="text-gray-300">|</span>
+            <span>分類: {{ page.categories | join: ', ' | capitalize }}</span>
+            {% endif %}
+        </div>
+        {% if page.summary %}
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">{{ page.summary }}</p>
+        {% endif %}
+    </header>
+
+    <div class="prose max-w-none">
+        {{ content }}
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="{{ '/' | relative_url }}"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>

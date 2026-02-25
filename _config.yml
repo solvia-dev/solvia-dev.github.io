@@ -1,0 +1,17 @@
+title: Solvia Dev - 技術筆記與開發工具
+email: admin@solvia.dev
+description: >-
+  這裡是 Solvia 的技術實驗室，分享程式開發、自動化工具與系統架構的點滴。
+baseurl: ""
+url: "https://solvia-dev.github.io"
+
+permalink: /:categories/:year/:month/:day/:title/
+
+# Build settings
+markdown: kramdown
+
+collections:
+  posts:
+    output: true
+
+categories_dir: categories
