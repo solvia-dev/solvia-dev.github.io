@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <header class="text-center py-8 mb-8">
+    <h2 class="text-4xl font-extrabold mb-4 text-gray-900">探索技術與開發的無限可能</h2>
+    <p class="text-lg text-gray-600">這裡是 Solvia 的技術實驗室，分享程式開發、自動化工具與系統架構的點滴。</p>
+</header>
+
+<section class="mb-12 bg-white p-8 rounded-lg shadow-sm">
+    <h3 class="text-2xl font-bold mb-4 border-b-2 border-blue-500 inline-block">關於本站</h3>
+    <p class="leading-relaxed mb-4 text-gray-700">
+        本站致力於紀錄開發過程中遇到的各類技術挑戰。我們相信「最好的學習就是分享」，透過系統化的筆記整理，不僅幫助自己鞏固知識，也能為其他開發者提供參考。
+    </p>
+    <p class="leading-relaxed text-gray-700">
+        目前主要關注領域包括：<strong>Node.js 應用開發</strong>、<strong>Vue 前端技術</strong>、以及 <strong>GitHub Pages 靜態網站架設</strong>。
+    </p>
+</section>
+
+<section class="mb-12">
+    <h3 class="text-2xl font-bold mb-6 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+            </path>
+        </svg>
+        最新技術筆記
+    </h3>
+
+    <div class="space-y-6">
+        
+        <article
+            class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition duration-200">
+            <h4 class="text-xl font-bold mb-2">
+                <a href="/github/blog/2026/02/28/how-to-enable-github-pages/" class="text-gray-900 hover:text-blue-600 transition">如何啟用 GitHub Pages 建立無伺服器部落格</a>
+            </h4>
+            <div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+                <span>2026-02-28</span>
+                
+                <span class="px-2 py-0.5 bg-gray-100 rounded text-gray-600 text-xs font-semibold">Github, blog</span>
+                
+            </div>
+            <p class="text-gray-600 line-clamp-3">
+                
+                想要擁有自己的部落格，卻不想花錢租用伺服器？GitHub Pages 提供了免費又穩定的靜態網頁代管服務。這篇文章將帶你一步步啟用 GitHub Pages，輕鬆讓你的網站上線！
+                
+            </p>
+            <div class="mt-4">
+                <a href="/github/blog/2026/02/28/how-to-enable-github-pages/" class="text-blue-600 text-sm font-semibold hover:underline">閱讀全文
+                    &rarr;</a>
+            </div>
+        </article>
+        
+        <article
+            class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition duration-200">
+            <h4 class="text-xl font-bold mb-2">
+                <a href="/vue/2026/02/25/vue3-composition-api-intro/" class="text-gray-900 hover:text-blue-600 transition">Vue 3 Composition API 初學者指南：為何我們應該拋棄 Options API？</a>
+            </h4>
+            <div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+                <span>2026-02-25</span>
+                
+                <span class="px-2 py-0.5 bg-gray-100 rounded text-gray-600 text-xs font-semibold">Vue</span>
+                
+            </div>
+            <p class="text-gray-600 line-clamp-3">
+                
+                Vue 3 帶來了改變遊戲規則的 Composition API。這篇文章將帶您了解從 Options API 轉換到 Composition API 的原因，以及如何用 setup 函式寫出更好維護的前端元件。
+                
+            </p>
+            <div class="mt-4">
+                <a href="/vue/2026/02/25/vue3-composition-api-intro/" class="text-blue-600 text-sm font-semibold hover:underline">閱讀全文
+                    &rarr;</a>
+            </div>
+        </article>
+        
+        <article
+            class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition duration-200">
+            <h4 class="text-xl font-bold mb-2">
+                <a href="/vue/2026/02/25/vue-router-basics/" class="text-gray-900 hover:text-blue-600 transition">Vue Router 核心觀念：如何優雅地管理單頁應用程式 (SPA) 路由</a>
+            </h4>
+            <div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+                <span>2026-02-25</span>
+                
+                <span class="px-2 py-0.5 bg-gray-100 rounded text-gray-600 text-xs font-semibold">Vue</span>
+                
+            </div>
+            <p class="text-gray-600 line-clamp-3">
+                
+                在單頁應用程式 (SPA) 中，路由管理是不可或缺的一環。這篇文章帶您快速了解 Vue Router 的基本設定、動態路由、以及導航守衛 (Navigation Guards) 的實用技巧。
+                
+            </p>
+            <div class="mt-4">
+                <a href="/vue/2026/02/25/vue-router-basics/" class="text-blue-600 text-sm font-semibold hover:underline">閱讀全文
+                    &rarr;</a>
+            </div>
+        </article>
+        
+        <article
+            class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition duration-200">
+            <h4 class="text-xl font-bold mb-2">
+                <a href="/nodejs/2026/02/25/nodejs-express-rest-api/" class="text-gray-900 hover:text-blue-600 transition">使用 Express 快速打造 Node.js RESTful API</a>
+            </h4>
+            <div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+                <span>2026-02-25</span>
+                
+                <span class="px-2 py-0.5 bg-gray-100 rounded text-gray-600 text-xs font-semibold">Nodejs</span>
+                
+            </div>
+            <p class="text-gray-600 line-clamp-3">
+                
+                想建立自己的後端服務？本篇文章將帶領您使用 Node.js 中最受歡迎的 Express 框架，從零開始實作一個符合 RESTful 架構的 API 應用程式。
+                
+            </p>
+            <div class="mt-4">
+                <a href="/nodejs/2026/02/25/nodejs-express-rest-api/" class="text-blue-600 text-sm font-semibold hover:underline">閱讀全文
+                    &rarr;</a>
+            </div>
+        </article>
+        
+        <article
+            class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500 hover:shadow-md transition duration-200">
+            <h4 class="text-xl font-bold mb-2">
+                <a href="/nodejs/2026/02/25/nodejs-event-loop-deep-dive/" class="text-gray-900 hover:text-blue-600 transition">深入理解 Node.js 事件迴圈 (Event Loop) 核心機制</a>
+            </h4>
+            <div class="text-sm text-gray-500 mb-3 flex items-center gap-2">
+                <span>2026-02-25</span>
+                
+                <span class="px-2 py-0.5 bg-gray-100 rounded text-gray-600 text-xs font-semibold">Nodejs</span>
+                
+            </div>
+            <p class="text-gray-600 line-clamp-3">
+                
+                這篇文章深入探討 Node.js 的事件迴圈（Event Loop）機制，解釋 Node.js 如何在單執行緒的環境下達到高並發的非同步效能表現，幫助您寫出更有效率的後端程式碼。
+                
+            </p>
+            <div class="mt-4">
+                <a href="/nodejs/2026/02/25/nodejs-event-loop-deep-dive/" class="text-blue-600 text-sm font-semibold hover:underline">閱讀全文
+                    &rarr;</a>
+            </div>
+        </article>
+        
+    </div>
+</section>
+
+<section class="text-center bg-blue-600 text-white p-8 rounded-lg shadow-sm">
+    <h3 class="text-2xl font-bold mb-4">使用我們的開發工具</h3>
+    <p class="mb-6 opacity-90 leading-relaxed">我們開發了一系列實用的 Web 工具，協助你提升開發效率。不管你是前端開發者還是後端工程師，都能在這裡找到適合你的小幫手。</p>
+    <a href="/webutils/" target="_blank"
+        class="inline-block bg-white text-blue-600 font-bold px-8 py-3 rounded-full hover:bg-gray-100 hover:shadow-lg transition transform hover:-translate-y-0.5 duration-200 shadow-md">
+        前往 Web Utils 工具箱
+    </a>
+</section>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

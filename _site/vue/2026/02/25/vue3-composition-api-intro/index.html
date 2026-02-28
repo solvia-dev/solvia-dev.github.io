@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 Composition API 初學者指南：為何我們應該拋棄 Options API？ - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Vue 3 Composition API 初學者指南：為何我們應該拋棄 Options API？</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-02-25T00:00:00+08:00">2026年02月25日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Vue</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">Vue 3 帶來了改變遊戲規則的 Composition API。這篇文章將帶您了解從 Options API 轉換到 Composition API 的原因，以及如何用 setup 函式寫出更好維護的前端元件。</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>當學習 Vue 3 時，最引人注目的新特性莫過於 <strong>Composition API (組合式 API)</strong>。對於熟悉 Vue 2 (Options API) 的開發者來說，一開始看到 <code class="language-plaintext highlighter-rouge">setup()</code> 函式可能會有些不習慣。但事實上，它是為了幫助我們解決複雜元件的維護噩夢而誕生的。</p>
+
+<h2 id="options-api-的痛點在哪裡">Options API 的痛點在哪裡？</h2>
+
+<p>在傳統的 Options API 中，我們根據資料的「類型」來組織程式碼：<code class="language-plaintext highlighter-rouge">data</code>, <code class="language-plaintext highlighter-rouge">methods</code>, <code class="language-plaintext highlighter-rouge">computed</code>, <code class="language-plaintext highlighter-rouge">watch</code> 等等。當元件變得很小的時候，這種寫法非常直覺易懂。</p>
+
+<p>然而，如果一個元件長度超過了 500 行，並包含了 3 到 4 個主要邏輯區塊（例如：搜尋過濾邏輯、分頁邏輯、資料獲取邏輯），我們會發現這幾個邏輯的程式碼被<strong>強迫拆散</strong>在 <code class="language-plaintext highlighter-rouge">data</code>, <code class="language-plaintext highlighter-rouge">methods</code> 和 <code class="language-plaintext highlighter-rouge">computed</code> 各個角落。</p>
+
+<p>這會導致：</p>
+<ul>
+  <li><strong>閱讀困難</strong>：要理解「搜尋」邏輯，必須在同一個檔案內不停上下捲動 (Scrolling up and down)。</li>
+  <li><strong>重用困難</strong>：要將邏輯抽離成 Mixin 會有命名衝突和來源不明確的問題。</li>
+</ul>
+
+<h2 id="composition-api-帶來什麼改變">Composition API 帶來什麼改變？</h2>
+
+<p>Composition API 允許我們以「邏輯關注點 (Logic Concerns)」來組織程式碼。這意味著所有與「搜尋過濾」相關的變數、計算屬性和方法，都可以寫在一起。這也是為什麼它被稱為「組合式」的原因。</p>
+
+<h3 id="來看看一個基礎的計數器範例">來看看一個基礎的計數器範例</h3>
+
+<p>使用 <code class="language-plaintext highlighter-rouge">&lt;script setup&gt;</code> 語法糖會讓程式碼更加簡潔：</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;h2&gt;</span>計數器：9<span class="nt">&lt;/h2&gt;</span>
+    <span class="nt">&lt;p&gt;</span>目前的數字是: <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;button</span> <span class="err">@</span><span class="na">click=</span><span class="s">"increment"</span><span class="nt">&gt;</span>增加<span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ref</span><span class="p">,</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// 狀態宣告</span>
+<span class="kd">const</span> <span class="nx">count</span> <span class="o">=</span> <span class="nf">ref</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// 計算屬性</span>
+<span class="kd">const</span> <span class="nx">doubleCount</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">count</span><span class="p">.</span><span class="nx">value</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">// 方法</span>
+<span class="kd">function</span> <span class="nf">increment</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">count</span><span class="p">.</span><span class="nx">value</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<p>在上面的例子中，<code class="language-plaintext highlighter-rouge">ref</code> 讓資料具有響應性 (Reactivity)。與 <code class="language-plaintext highlighter-rouge">data()</code> 不同的是，我們不需要透過 <code class="language-plaintext highlighter-rouge">this</code> 來存取它們，這也解決了令人頭痛的 TypeScript 支援問題。</p>
+
+<h2 id="獨立封裝與邏輯重用-composables">獨立封裝與邏輯重用 (Composables)</h2>
+
+<p>更棒的是，我們可以輕易將邏輯抽離成一個獨立的 JS 檔案（通常稱為 Composable）：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// useCounter.js</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ref</span><span class="p">,</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">useCounter</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">count</span> <span class="o">=</span> <span class="nf">ref</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">doubleCount</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">count</span><span class="p">.</span><span class="nx">value</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);</span>
+
+  <span class="kd">function</span> <span class="nf">increment</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">count</span><span class="p">.</span><span class="nx">value</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="p">{</span> <span class="nx">count</span><span class="p">,</span> <span class="nx">doubleCount</span><span class="p">,</span> <span class="nx">increment</span> <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>任何需要這個邏輯的元件，只需 <code class="language-plaintext highlighter-rouge">import { useCounter } from './useCounter.js'</code> 就能馬上使用，不會有 Mixin 的命名衝突風險，這真的是前端架構的救星！</p>
+
+<p>希望這個簡單的介紹能幫助您邁出 Composition API 的第一步。好的工具能大幅提升開發效率，如果您在前端開發時需要一些實用的輔助工具，也別忘了到我們的 <a href="/webutils/">WebUtils 工具箱</a> 尋寶喔！</p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

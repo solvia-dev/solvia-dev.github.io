@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Router 核心觀念：如何優雅地管理單頁應用程式 (SPA) 路由 - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Vue Router 核心觀念：如何優雅地管理單頁應用程式 (SPA) 路由</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-02-25T00:00:00+08:00">2026年02月25日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Vue</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">在單頁應用程式 (SPA) 中，路由管理是不可或缺的一環。這篇文章帶您快速了解 Vue Router 的基本設定、動態路由、以及導航守衛 (Navigation Guards) 的實用技巧。</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>現代前端框架（如 Vue.js）打造的通常是 <strong>單頁應用程式 (SPA - Single Page Application)</strong>。在 SPA 中，當使用者點擊連結切換頁面時，瀏覽器並不會發送請求給後端重新載入整個 HTML 檔案，而是透過 JavaScript (也就是 Vue Router) 來抽換頁面中的組件 (Components)，帶來極度流暢的使用者體驗。</p>
+
+<h2 id="什麼是-vue-router">什麼是 Vue Router？</h2>
+
+<p>Vue Router 是 Vue.js 官方的路由管理器，它深度整合了 Vue.js 核心，使得建立單頁應用程式變得輕而易舉。</p>
+
+<p>它的核心職責就是定義：「<strong>當網址是什麼的時候，畫面上應該顯示哪個組件。</strong>」</p>
+
+<h2 id="基本配置與起步">基本配置與起步</h2>
+
+<p>在建立 Vue 3 專案時，若有選擇安裝 Vue Router，它通常會在 <code class="language-plaintext highlighter-rouge">src/router/index.js</code> 產生設定檔。我們來看看基本的結構：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createRouter</span><span class="p">,</span> <span class="nx">createWebHistory</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue-router</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">HomeView</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../views/HomeView.vue</span><span class="dl">'</span>
+<span class="k">import</span> <span class="nx">AboutView</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../views/AboutView.vue</span><span class="dl">'</span>
+
+<span class="kd">const</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span>
+    <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">home</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">component</span><span class="p">:</span> <span class="nx">HomeView</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/about</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">about</span><span class="dl">'</span><span class="p">,</span>
+    <span class="c1">// Route Level Code-Splitting: 幫助減少初次載入時間 (延遲載入)</span>
+    <span class="na">component</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">../views/AboutView.vue</span><span class="dl">'</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="kd">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="nf">createRouter</span><span class="p">({</span>
+  <span class="na">history</span><span class="p">:</span> <span class="nf">createWebHistory</span><span class="p">(),</span>
+  <span class="nx">routes</span>
+<span class="p">})</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="nx">router</span>
+</code></pre></div></div>
+
+<p>在 Vue 元件中，我們透過 <code class="language-plaintext highlighter-rouge">&lt;router-view&gt;</code> 這個標籤告訴 Vue：「請在這裡渲染與目前網址匹配的組件」。並用 <code class="language-plaintext highlighter-rouge">&lt;router-link to="/about"&gt;</code> 取代傳統的 <code class="language-plaintext highlighter-rouge">&lt;a href="/about"&gt;</code> 以防觸發完整的網頁重新載入。</p>
+
+<h2 id="動態路由匹配-dynamic-routing">動態路由匹配 (Dynamic Routing)</h2>
+
+<p>很多時候，我們需要將某個模式的所有路由對應到同一個組件。例如，我們有一個 <code class="language-plaintext highlighter-rouge">UserView</code> 元件，它應該能為所有不同的使用者 ID 呈現。</p>
+
+<p>這時候就可以在路徑中使用「動態區段 (Dynamic Segment)」，以冒號 <code class="language-plaintext highlighter-rouge">:</code> 開頭：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="c1">// 匹配 /users/evan, /users/john 等等</span>
+  <span class="p">{</span> <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/users/:id</span><span class="dl">'</span><span class="p">,</span> <span class="na">component</span><span class="p">:</span> <span class="nx">UserView</span> <span class="p">},</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p>當導航到 <code class="language-plaintext highlighter-rouge">/users/123</code> 時，我們可以在 <code class="language-plaintext highlighter-rouge">UserView</code> 的 <code class="language-plaintext highlighter-rouge">setup</code> 函式中讀取這份參數：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">useRoute</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">vue-router</span><span class="dl">'</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
+  <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">route</span> <span class="o">=</span> <span class="nf">useRoute</span><span class="p">()</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span> <span class="c1">// 輸出 '123'</span>
+    <span class="k">return</span> <span class="p">{}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="導航守衛-navigation-guards">導航守衛 (Navigation Guards)</h2>
+
+<p>有時候我們不希望任何人都能輕易拜訪特定頁面（例如管理員後台）。Vue Router 提供了 <strong>導航守衛</strong> 來控制存取權限。你可以在路由跳轉的過程之中「攔截」它，進行登入驗證等檢查。</p>
+
+<p>最常用的就是全域前置守衛 <code class="language-plaintext highlighter-rouge">router.beforeEach</code>：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">router</span><span class="p">.</span><span class="nf">beforeEach</span><span class="p">((</span><span class="nx">to</span><span class="p">,</span> <span class="k">from</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// 檢查如果即將前往的路由名稱不是 login，且使用者尚未登入</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">to</span><span class="p">.</span><span class="nx">name</span> <span class="o">!==</span> <span class="dl">'</span><span class="s1">login</span><span class="dl">'</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">isAuthenticated</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 強制重導向至登入頁</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">login</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</code></pre></div></div>
+
+<p>掌握了設定檔、動態參數以及導航守衛，基本上就已掌握 Vue Router 80% 的日常開發需求了！當然，在切版和開發單頁應用的過程中，如果遇到各種網頁小工具需求，也歡迎點擊我們的 <a href="/webutils/">WebUtils 開發工具箱</a> 尋找靈感喔！</p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

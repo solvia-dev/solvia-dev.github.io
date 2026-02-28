@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何啟用 GitHub Pages 建立無伺服器部落格 - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">如何啟用 GitHub Pages 建立無伺服器部落格</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-02-28T00:00:00+08:00">2026年02月28日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Github, blog</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">想要擁有自己的部落格，卻不想花錢租用伺服器？GitHub Pages 提供了免費又穩定的靜態網頁代管服務。這篇文章將帶你一步步啟用 GitHub Pages，輕鬆讓你的網站上線！</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>想要擁有一個專屬的個人部落格或技術筆記網站，又不想花費心力與金錢去維護伺服器嗎？<strong>GitHub Pages</strong> 絕對是軟體開發者與技術寫作者的首選！</p>
+
+<p>GitHub Pages 是 GitHub 提供的一項靜態網站代管服務，你只需要將 HTML、CSS、JavaScript 或是像 Jekyll、Hugo 這類靜態網站產生器 (Static Site Generator) 的原始碼推送到 GitHub，就能免費將其轉換為公開的網站。</p>
+
+<p>這篇文章將帶你了解如何從零開始啟用 GitHub Pages。</p>
+
+<h2 id="第一步建立新的-repository-儲存庫">第一步：建立新的 Repository (儲存庫)</h2>
+
+<ol>
+  <li>登入你的 GitHub 帳號。</li>
+  <li>點擊右上角的 <code class="language-plaintext highlighter-rouge">+</code> 號，選擇 <strong>New repository</strong>。</li>
+  <li><strong>重要命名規則</strong>：如果你希望你的網站網址是 <code class="language-plaintext highlighter-rouge">https://&lt;你的帳號&gt;.github.io</code>，請務必將 Repository 命名為 <strong><code class="language-plaintext highlighter-rouge">&lt;你的帳號&gt;.github.io</code></strong>（例如：<code class="language-plaintext highlighter-rouge">solvia-dev.github.io</code>）。</li>
+  <li>將儲存庫設為 <strong>Public</strong> (公開)。GitHub Pages 免費版必須公開原始碼。</li>
+  <li>點擊 <strong>Create repository</strong>。</li>
+</ol>
+
+<h2 id="第二步上傳你的網站程式碼">第二步：上傳你的網站程式碼</h2>
+
+<p>如果你只是想測試，可以先建立一個簡單的 <code class="language-plaintext highlighter-rouge">index.html</code>：</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>我的第一個 GitHub Pages<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Hello, GitHub Pages!<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p&gt;</span>這是我用 GitHub Pages 架設的網站。<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>使用 Git 指令或是直接透過 GitHub 網頁介面，將這個檔案 push 到你剛剛建立的儲存庫的 <code class="language-plaintext highlighter-rouge">main</code>（或 <code class="language-plaintext highlighter-rouge">master</code>）分支上。</p>
+
+<p>如果是使用 Jekyll（像本站一樣），則是將 <code class="language-plaintext highlighter-rouge">_config.yml</code>、<code class="language-plaintext highlighter-rouge">_posts</code> 等相關檔案與資料夾推送到 GitHub。</p>
+
+<h2 id="第三步前往-settings-啟用-github-pages">第三步：前往 Settings 啟用 GitHub Pages</h2>
+
+<ol>
+  <li>在你的 Repository 頁面上，點擊上方的 <strong>Settings</strong> 頁籤。</li>
+  <li>在左側選單中找到並點擊 <strong>Pages</strong>。</li>
+  <li>在 <strong>Build and deployment</strong> 區塊中：
+    <ul>
+      <li><strong>Source</strong>: 選擇 <code class="language-plaintext highlighter-rouge">Deploy from a branch</code>。</li>
+      <li><strong>Branch</strong>: 選擇你的主要分支（通常是 <code class="language-plaintext highlighter-rouge">main</code> 或 <code class="language-plaintext highlighter-rouge">master</code>），資料夾請維持預設的 <code class="language-plaintext highlighter-rouge">/ (root)</code>（除非你有將網站檔案放進特定資料夾如 <code class="language-plaintext highlighter-rouge">docs</code>）。</li>
+    </ul>
+  </li>
+  <li>點擊 <strong>Save</strong> 儲存設定。</li>
+</ol>
+
+<h2 id="第四步等待部署與瀏覽你的網站">第四步：等待部署與瀏覽你的網站</h2>
+
+<p>儲存設定後，GitHub Actions 會自動開始建立並部署你的網站。這通常需要幾分鐘的時間。</p>
+
+<p>你可以在 Repository 上方的 <strong>Actions</strong> 頁籤中查看部署進度。一旦顯示綠色勾勾完成，你就可以在瀏覽器中輸入你的網址：</p>
+
+<p><code class="language-plaintext highlighter-rouge">https://&lt;你的帳號&gt;.github.io/</code></p>
+
+<p>恭喜你！你的網站已經成功上線，全世界都可以造訪了！有了 GitHub Pages，你就能專注在內容創作與版面設計，把基礎設施的瑣事全部交給 GitHub 就好。</p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

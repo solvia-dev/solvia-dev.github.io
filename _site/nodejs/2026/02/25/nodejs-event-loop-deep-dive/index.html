@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深入理解 Node.js 事件迴圈 (Event Loop) 核心機制 - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">深入理解 Node.js 事件迴圈 (Event Loop) 核心機制</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-02-25T00:00:00+08:00">2026年02月25日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Nodejs</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">這篇文章深入探討 Node.js 的事件迴圈（Event Loop）機制，解釋 Node.js 如何在單執行緒的環境下達到高並發的非同步效能表現，幫助您寫出更有效率的後端程式碼。</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>Node.js 以其非阻塞 I/O (Non-blocking I/O) 與單執行緒 (Single-threaded) 架構聞名。然而，Node.js 如何在單一執行緒中同時處理成千上萬的請求而不會卡死？答案就在於它的核心：<strong>事件迴圈 (Event Loop)</strong>。了解 Event Loop 是每個 Node.js 開發者進階必經的過程。</p>
+
+<h2 id="為什麼需要了解-event-loop">為什麼需要了解 Event Loop？</h2>
+
+<p>當我們在使用 Node.js 開發應用程式時，如果對 Event Loop 的運作機制不熟悉，很容易寫出阻塞執行緒的程式碼 (例如大量且耗時的 CPU 計算)，導致整個系統效能瓶頸。理解它是避免這種情況的最佳防線。</p>
+
+<h2 id="event-loop-的主要階段-phases">Event Loop 的主要階段 (Phases)</h2>
+
+<p>根據 Node.js 官方文件， Event Loop 在內部是由 libuv 這個 C 函式庫提供的，它將迴圈分為以下幾個主要階段，每一個階段都有一個 FIFO (First-In, First-Out) 的 Callback Queue：</p>
+
+<ol>
+  <li><strong>Timers 階段</strong>：負責執行被 <code class="language-plaintext highlighter-rouge">setTimeout()</code> 與 <code class="language-plaintext highlighter-rouge">setInterval()</code> 註冊的 callback。當時間到了，它們的 callback 會被放入此階段的 queue 等待執行。</li>
+  <li><strong>Pending Callbacks 階段</strong>：執行一些系統操作的 callback，例如 TCP 錯誤等。</li>
+  <li><strong>Idle, Prepare 階段</strong>：僅供 Node.js 內部使用。</li>
+  <li><strong>Poll 階段</strong>：非常重要的一個階段。它負責接收新的 I/O 事件 (例如讀取檔案、收發網路請求)，並執行 I/O 相關的 callbacks。大部分我們寫的非同步程式碼其 callback 都在這裡被觸發。</li>
+  <li><strong>Check 階段</strong>：負責執行 <code class="language-plaintext highlighter-rouge">setImmediate()</code> 註冊的 callbacks。</li>
+  <li><strong>Close Callbacks 階段</strong>：執行一些關閉資源的 callback，例如 <code class="language-plaintext highlighter-rouge">socket.on('close', ...)</code>。</li>
+</ol>
+
+<h2 id="macrotask-與-microtask-的恩怨情仇">Macrotask 與 Microtask 的恩怨情仇</h2>
+
+<p>在每個階段交替之間，Node.js 還有一個隱藏的機關：<strong>Microtask Queue</strong>。
+在 Node.js 中，<code class="language-plaintext highlighter-rouge">process.nextTick()</code> 與 <code class="language-plaintext highlighter-rouge">Promise.then()</code> 會產生 Microtask。</p>
+
+<p><strong>規則是：</strong> 只要 Event Loop 完成了其中一個階段的執行，在前往下一個階段之前，它會停下來檢查 Microtask Queue。如果裡面有任務，就會<strong>全部清空</strong>，然後才繼續前進。這代表 Microtask 擁有極高的執行優先權。</p>
+
+<h3 id="實際範例分析">實際範例分析</h3>
+
+<p>看看以下程式碼，試著猜猜看輸出的順序？</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">1. Start</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nf">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">2. setTimeout</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="nf">setImmediate</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">3. setImmediate</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nb">Promise</span><span class="p">.</span><span class="nf">resolve</span><span class="p">().</span><span class="nf">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">4. Promise</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">process</span><span class="p">.</span><span class="nf">nextTick</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">5. process.nextTick</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">6. End</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><strong>執行結果順序會是：</strong></p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">1. Start</code> (同步執行)</li>
+  <li><code class="language-plaintext highlighter-rouge">6. End</code> (同步執行)</li>
+  <li><code class="language-plaintext highlighter-rouge">5. process.nextTick</code> (Microtask 優先級最高)</li>
+  <li><code class="language-plaintext highlighter-rouge">4. Promise</code> (其次的 Microtask)</li>
+  <li><code class="language-plaintext highlighter-rouge">2. setTimeout</code> 或 <code class="language-plaintext highlighter-rouge">3. setImmediate</code> (註：如果在主模組層級執行，這兩者的順序可能因為系統效能而隨機；但在 I/O callback 內，<code class="language-plaintext highlighter-rouge">setImmediate</code> 永遠先於 <code class="language-plaintext highlighter-rouge">setTimeout</code> 執行！)</li>
+</ol>
+
+<h2 id="總結與最佳實踐">總結與最佳實踐</h2>
+
+<ul>
+  <li><strong>不要阻塞事件迴圈</strong>：避免在主執行緒進行耗時巨大的同步運算 (例如超大的 JSON 解析或是繁雜的加密演算法)。</li>
+  <li>遇到 CPU 密集型任務，考慮使用 Node.js 的 <strong>Worker Threads</strong> 將其外包到其他執行緒處理，保持主 Event Loop 的流暢。</li>
+  <li>理解非同步的優先級：如果你希望某個回呼函式盡快且肯定在 I/O 之前執行，使用 <code class="language-plaintext highlighter-rouge">process.nextTick()</code>；如果只是希望在目前階段之後非同步執行，<code class="language-plaintext highlighter-rouge">setImmediate()</code> 會是個不錯的選擇。</li>
+</ul>
+
+<p>希望這篇文章能幫助您釐清 Node.js Event Loop 回圈的心智模型，讓我們一起寫出更強健的後端系統！如果您對前端或是輔助工具有興趣，歡迎造訪我們的 <a href="/webutils/">WebUtils 工具箱</a>。</p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

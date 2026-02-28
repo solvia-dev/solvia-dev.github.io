@@ -15,3 +15,6 @@ collections:
     output: true
 
 categories_dir: categories
+
+# Server settings
+port: 4001

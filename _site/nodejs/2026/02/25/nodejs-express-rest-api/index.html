@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用 Express 快速打造 Node.js RESTful API - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">使用 Express 快速打造 Node.js RESTful API</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-02-25T00:00:00+08:00">2026年02月25日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Nodejs</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">想建立自己的後端服務？本篇文章將帶領您使用 Node.js 中最受歡迎的 Express 框架，從零開始實作一個符合 RESTful 架構的 API 應用程式。</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>在建立現代網頁應用程式時，前後端分離已經是標準配置。前端（如 Vue, React）負責介面互動，這時就需要一個強大且穩定的後端 API 來提供資料讀寫的服務。在 Node.js 生態系中，<strong>Express</strong> 絕對是建置這類服務的王者。</p>
+
+<h2 id="什麼是-restful-api">什麼是 RESTful API？</h2>
+
+<p>REST (Representational State Transfer) 是一種軟體架構風格，主要透過 HTTP 的動詞（Methods）來對資源（Resources）進行操作。簡單來說：</p>
+<ul>
+  <li><strong>GET</strong>：讀取（Read）資源</li>
+  <li><strong>POST</strong>：建立（Create）資源</li>
+  <li><strong>PUT/PATCH</strong>：更新（Update）資源</li>
+  <li><strong>DELETE</strong>：刪除（Delete）資源</li>
+</ul>
+
+<h2 id="初始化專案與安裝-express">初始化專案與安裝 Express</h2>
+
+<p>首先，確保您的電腦已經安裝了 Node.js。在終端機中建立新資料夾並初始化專案：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>my-express-api
+<span class="nb">cd </span>my-express-api
+npm init <span class="nt">-y</span>
+npm <span class="nb">install </span>express
+</code></pre></div></div>
+
+<h2 id="實作基本伺服器與路由">實作基本伺服器與路由</h2>
+
+<p>建立一個 <code class="language-plaintext highlighter-rouge">app.js</code> 檔案，我們將要在這裡撰寫所有的主程式。假設我們正在撰寫一個「代辦事項 (Todos)」的 API：</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nf">express</span><span class="p">();</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">;</span>
+
+<span class="c1">// 解析 JSON 格式的請求本體</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nf">json</span><span class="p">());</span>
+
+<span class="c1">// 模擬資料庫</span>
+<span class="kd">let</span> <span class="nx">todos</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">學習 Node.js</span><span class="dl">'</span><span class="p">,</span> <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">寫一篇技術文章</span><span class="dl">'</span><span class="p">,</span> <span class="na">completed</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">];</span>
+
+<span class="c1">// GET: 取得所有 Todo</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/api/todos</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">json</span><span class="p">(</span><span class="nx">todos</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// GET: 依據 ID 取得特定 Todo</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/api/todos/:id</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">todo</span> <span class="o">=</span> <span class="nx">todos</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nx">t</span> <span class="o">=&gt;</span> <span class="nx">t</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nf">parseInt</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">));</span>
+    <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">todo</span><span class="p">)</span> <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nf">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">找不到該項目</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">json</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// POST: 新增 Todo</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="dl">'</span><span class="s1">/api/todos</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">newTodo</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">id</span><span class="p">:</span> <span class="nx">todos</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// 模擬自動遞增 ID</span>
+        <span class="na">title</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span>
+        <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">};</span>
+    <span class="nx">todos</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="nx">newTodo</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">201</span><span class="p">).</span><span class="nf">json</span><span class="p">(</span><span class="nx">newTodo</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// DELETE: 刪除 Todo</span>
+<span class="nx">app</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="dl">'</span><span class="s1">/api/todos/:id</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">todoIndex</span> <span class="o">=</span> <span class="nx">todos</span><span class="p">.</span><span class="nf">findIndex</span><span class="p">(</span><span class="nx">t</span> <span class="o">=&gt;</span> <span class="nx">t</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nf">parseInt</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">));</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">todoIndex</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nf">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">找不到該項目</span><span class="dl">'</span><span class="p">);</span>
+    
+    <span class="kd">const</span> <span class="nx">deletedTodo</span> <span class="o">=</span> <span class="nx">todos</span><span class="p">.</span><span class="nf">splice</span><span class="p">(</span><span class="nx">todoIndex</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">json</span><span class="p">(</span><span class="nx">deletedTodo</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="p">});</span>
+
+<span class="c1">// 啟動伺服器</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`Server is running at http://localhost:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="測試-api">測試 API</h2>
+
+<p>一旦伺服器啟動後 (<code class="language-plaintext highlighter-rouge">node app.js</code>)，你就可以使用 REST Client 工具（如 Postman、Insomnia，或是 VS Code 的 Thunder Client 擴充套件）進行測試。</p>
+
+<p>雖然這只是一個儲存在記憶體中的範例，但所有更複雜的真實世界 API（連接 PostgreSQL、MongoDB 等資料庫，加入使用者驗證 JWT 等）都是在此架構上延伸擴展的！</p>
+
+<p>後端開發固然有趣，有時也需要方便的小工具來轉換 JSON 格式或是編碼/解碼字串。試試看我們精心準備的 <a href="/webutils/">WebUtils 工具箱</a>，提升您的開發效能！</p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
