@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何在 GitHub Pages 上使用 Jekyll 建立靜態部落格 - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">如何在 GitHub Pages 上使用 Jekyll 建立靜態部落格</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-03-01T00:00:00+08:00">2026年03月01日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Github, jekyll, blog</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">GitHub Pages 原生支援 Jekyll，可以讓你輕鬆透過 Markdown 攥寫文章並自動產生靜態網頁。這篇文章將帶你了解如何設定 Jekyll 結構，以及如何在本地端測試你的部落格。</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>在了解如何啟用 GitHub Pages 後，你可能會發現直接寫 HTML 效率太低，也不利於管理大量的部落格文章。</p>
+
+<p>這時，<strong>Jekyll</strong> 就能派上用場！Jekyll 是一個簡單的、支援部落格的靜態網站產生器 (Static Site Generator)。最棒的是，<strong>GitHub Pages 原生完美支援 Jekyll</strong>。當你上傳 Markdown 檔案或 Jekyll 專案時，GitHub 會自動在背景執行編譯，幫你轉成最終的靜態佈局組合網頁。</p>
+
+<p>這篇文章將為你介紹如何在 GitHub Pages 上搭配 Jekyll 來建立及管理文章。</p>
+
+<h2 id="什麼是-jekyll">什麼是 Jekyll？</h2>
+
+<p>Jekyll 會讀取包含特定格式（Front Matter）的 Markdown 或 HTML 檔案，搭配自訂的版面配置（Layout / 主題），最後產生出一個完整的靜態網站。這樣你就可以專注於用 Markdown 寫文章內容，而不需要繁瑣地維護每個 HTML 頁面的頭尾及框架。</p>
+
+<h2 id="1-準備基礎結構">1. 準備基礎結構</h2>
+
+<p>在你的 GitHub Pages 儲存庫 (Repository) 中，通常需要建立以下幾個基礎檔案與資料夾來初始化 Jekyll：</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">_config.yml</code>：Jekyll 的核心設定檔。可以設定網站標題、描述、自訂變數與外掛 (plugins)。</li>
+  <li><code class="language-plaintext highlighter-rouge">_posts/</code>：存放所有部落格文章 Markdown 檔案的地方。</li>
+  <li><code class="language-plaintext highlighter-rouge">_layouts/</code>：存放網頁版面基礎結構設計檔（如 <code class="language-plaintext highlighter-rouge">default.html</code>, <code class="language-plaintext highlighter-rouge">post.html</code>）。</li>
+  <li><code class="language-plaintext highlighter-rouge">_includes/</code>：(選用) 存放可重複使用的 HTML 片段（如 Navbar、Footer）。</li>
+</ul>
+
+<p>一個最簡單的 <code class="language-plaintext highlighter-rouge">_config.yml</code> 範例：</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">title</span><span class="pi">:</span> <span class="s">我的技術部落格</span>
+<span class="na">description</span><span class="pi">:</span> <span class="s">記錄生活與程式開發的點滴</span>
+<span class="na">markdown</span><span class="pi">:</span> <span class="s">kramdown</span>
+</code></pre></div></div>
+
+<h2 id="2-撰寫你的第一篇文章">2. 撰寫你的第一篇文章</h2>
+
+<p>Jekyll 規定文章必須放在 <code class="language-plaintext highlighter-rouge">_posts</code> 資料夾，且檔名格式必須固定為：
+<code class="language-plaintext highlighter-rouge">YYYY-MM-DD-title.md</code> (例如：<code class="language-plaintext highlighter-rouge">2026-03-01-hello-jekyll.md</code>)</p>
+
+<p>打開檔案後，必須在文件最上方加入 <strong>Front Matter</strong> (一段 YAML 格式的區塊)，這是 Jekyll 解析版面以及取得文章元資料的重要區塊：</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s2">"</span><span class="s">我的第一篇</span><span class="nv"> </span><span class="s">Jekyll</span><span class="nv"> </span><span class="s">文章"</span>
+<span class="na">date</span><span class="pi">:</span> <span class="s">2026-03-01</span>
+<span class="na">categories</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">jekyll</span><span class="pi">,</span> <span class="nv">blog</span><span class="pi">]</span>
+<span class="nn">---</span>
+
+這是文章的內文，你可以盡情使用 <span class="gs">**Markdown**</span> 語法！
+<span class="p">
+-</span> 支援列表
+<span class="p">-</span> 支援 <span class="sb">`程式碼`</span>
+<span class="p">-</span> 支援圖片連結
+</code></pre></div></div>
+
+<p>一旦你將 <code class="language-plaintext highlighter-rouge">_posts</code> 裡的檔案與專案一起推送到 GitHub 的主要分支之後，GitHub Actions 就會自動觸發並幫你建立、發布網頁！</p>
+
+<h2 id="3-在本地端預覽你的網站">3. 在本地端預覽你的網站</h2>
+
+<p>每次寫完文章都要等 GitHub Actions 執行完才能看到結果，在排版調整時實在太花時間了！你可以安裝 Jekyll 在你的電腦上，就能夠即時預覽 (Live Reload)。</p>
+
+<h3 id="安裝前置作業">安裝前置作業</h3>
+<p>要運行 Jekyll，你需要：</p>
+<ol>
+  <li>安裝 <strong>Ruby</strong> 執行環境與開發套件 (DevKit)。</li>
+  <li>開啟終端機 (Terminal / 打開命令提示字元)，安裝 Jekyll 與 Bundler：
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem <span class="nb">install </span>jekyll bundler
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="啟動本地伺服器">啟動本地伺服器</h3>
+<p>在你的網站專案目錄下，先安裝依賴套件：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>接著啟動測試伺服器：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll serve
+</code></pre></div></div>
+<p><em>(注意：如果你在 <code class="language-plaintext highlighter-rouge">_config.yml</code> 有更改過預設通訊埠，例如設為 <code class="language-plaintext highlighter-rouge">port: 4001</code>，伺服器就會啟動在 4001 port)</em></p>
+
+<p>預設情況下，只要在瀏覽器輸入 <code class="language-plaintext highlighter-rouge">http://localhost:4000</code>（或你自定的 port），就能看到網站的效果了！只要你的伺服器正在執行，在你修改並儲存 Markdown 檔案時，畫面就會自動重新產生並整理。</p>
+
+<h2 id="結語">結語</h2>
+
+<p>結合 GitHub Pages 與 Jekyll，你擁有了一套強大、免費又容易做版本控制的寫作系統。你可以完全自主掌控所有內容的備份。準備好開啟你的技術分享之旅了嗎？趕快動手寫下你的文章吧！</p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
