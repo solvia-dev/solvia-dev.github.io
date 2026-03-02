@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數獨（Sudoku）遊戲規則與新手入門技巧 - Solvia Dev - 技術筆記與開發工具</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1636725382110643"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #4b5563;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .prose code {
+            background-color: #f3f4f6;
+            color: #ef4444;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .prose pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVMH799V7S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVMH799V7S');
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600"><a href="/">Solvia Dev</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:text-blue-500">首頁</a>
+                <a href="/webutils/" class="hover:text-blue-500">Web工具箱</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 w-full flex-grow pt-8 pb-12">
+        <article class="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
+    <header class="mb-8 border-b border-gray-100 pb-4">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">數獨（Sudoku）遊戲規則與新手入門技巧</h1>
+        <div class="text-sm text-gray-500 mb-4 flex items-center space-x-2">
+            <span>發布於: <time datetime="2026-03-03T00:00:00+08:00">2026年03月03日</time></span>
+            
+            <span class="text-gray-300">|</span>
+            <span>分類: Game, rules</span>
+            
+        </div>
+        
+        <p class="text-lg text-gray-600 bg-gray-50 p-4 rounded-md border-l-4 border-blue-500">想挑戰自己的邏輯思維嗎？數獨是一款風靡全球的數字解謎遊戲。本文將帶你了解數獨的基本規則與實用技巧，讓你輕鬆上手，享受解題的樂趣！</p>
+        
+    </header>
+
+    <div class="prose max-w-none">
+        <p>數獨（Sudoku）是一款源自18世紀末的瑞士，後在進入日本時被發揚光大的數學邏輯遊戲。雖然名稱中有「數」，但它其實與數學運算無關，而是考驗玩家的邏輯推理能力與觀察力。</p>
+
+<p>如果你是數獨新手，或者想回顧一下基本規則，這篇文章將為你詳細解說。</p>
+
+<h2 id="1-數獨的基本盤面">1. 數獨的基本盤面</h2>
+
+<p>標準的數獨盤面是一個 <strong>9×9</strong> 的大九宮格，總共有 81 個小格子。
+這個大九宮格又被粗線劃分為九個 <strong>3×3</strong> 的中九宮格（稱為「宮」）。</p>
+
+<p>在遊戲開始時，盤面上會預先填入一些數字，這些已知的數字被稱為「提示數」或「已知數」。</p>
+
+<h2 id="2-數獨的核心規則">2. 數獨的核心規則</h2>
+
+<p>數獨的遊戲目標非常簡單，但要達成卻需要仔細的邏輯推理。核心規則只有以下三條：</p>
+
+<ol>
+  <li><strong>每一行（橫向）</strong>：必須填入數字 1 到 9，且每個數字只能出現一次，不可重複。</li>
+  <li><strong>每一列（縱向）</strong>：必須填入數字 1 到 9，且每個數字只能出現一次，不可重複。</li>
+  <li><strong>每一個宮（3×3 的粗線範圍）</strong>：必須填入數字 1 到 9，且每個數字只能出現一次，不可重複。</li>
+</ol>
+
+<p>只要遵循這三個原則，將盤面上所有空白的格子都填滿正確的數字，就算成功解開謎題！</p>
+
+<h2 id="3-新手入門解題技巧">3. 新手入門解題技巧</h2>
+
+<p>對於剛接觸數獨的玩家，可以嘗試以下幾個常見的基礎解題技巧：</p>
+
+<ul>
+  <li>
+    <p><strong>唯一數法（單獨剩餘法）</strong>：
+如果某一行、某一列或某一個宮中，已經填入了 8 個不同的數字，那麼剩下的那一個空格，必定就是剩下的那第 9 個數字。這通常是解題時最容易發現的突破口。</p>
+  </li>
+  <li>
+    <p><strong>排除法（掃描法）</strong>：
+這是最常用的技巧。利用某個數字在其他行、列、宮的已知位置，來推斷出該數字在目標宮（或行/列）中唯一能填入的位置。
+例如：如果目標宮的上面兩行都已經有了數字「5」，那麼目標宮內的數字「5」就只能填在該宮的最底下一行。</p>
+  </li>
+  <li>
+    <p><strong>區塊排除法</strong>：
+當某個數字在一個宮內的可能位置被限制在同一行或同一列時，雖然還不能確定具體在哪一格，但可以利用這個特性，去排除相鄰宮內同一行或同一列的其他位置。</p>
+  </li>
+</ul>
+
+<h2 id="4-開始你的數獨挑戰">4. 開始你的數獨挑戰</h2>
+
+<p>數獨能夠有效鍛鍊大腦、提高專注力與邏輯思考能力，是一款老少咸宜的益智遊戲。</p>
+
+<p>看完以上的規則與技巧後，是不是躍躍欲試了呢？我們在網站上提供了一個簡單好用的網頁版數獨遊戲，無論你是想用滑鼠、鍵盤，還是手機觸控螢幕都能輕鬆遊玩。</p>
+
+<p>準備好挑戰你的大腦了嗎？點擊下方連結開始遊戲吧：</p>
+
+<p>👉 <strong><a href="/webutils/game/sudoku.html">前往遊玩：數獨 (Sudoku) 遊戲</a></strong></p>
+
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+        <a href="/"
+            class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            返回首頁
+        </a>
+    </footer>
+</article>
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-200 mt-auto bg-white">
+        <p>&copy; 2026 Solvia Dev. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
